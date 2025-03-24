@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{ee125ea1-ec31-48b5-a277-2a437915fce6}") = "HideoutInProgress", "HideoutInProgress.csproj", "{005289da-2f5b-475a-80ad-ae5e1ffb5b30}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Dist|Any CPU = Dist|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{005289da-2f5b-475a-80ad-ae5e1ffb5b30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{005289da-2f5b-475a-80ad-ae5e1ffb5b30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{005289da-2f5b-475a-80ad-ae5e1ffb5b30}.Dist|Any CPU.ActiveCfg = Dist|Any CPU
+		{005289da-2f5b-475a-80ad-ae5e1ffb5b30}.Dist|Any CPU.Build.0 = Dist|Any CPU
+		{005289da-2f5b-475a-80ad-ae5e1ffb5b30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{005289da-2f5b-475a-80ad-ae5e1ffb5b30}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {d98c0012-cea5-41c4-afa3-147ee993be82}
+	EndGlobalSection
+EndGlobal
