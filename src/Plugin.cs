@@ -16,7 +16,11 @@ public class Plugin : BaseUnityPlugin
     {
         Instance = this;
 
-        Settings.Init(Config);
+        // Settings.Init(Config);
+
+        new LoadPatch().Enable();
+        new ButtonPatch().Enable();
+        new CountPatch().Enable();
     }
 
     public static bool InRaid()
