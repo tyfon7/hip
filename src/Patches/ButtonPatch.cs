@@ -24,6 +24,6 @@ public class ButtonPatch : ModulePatch
         clone.SetSiblingIndex(____itemContainer.GetSiblingIndex() + 1);
 
         var transferButton = clone.gameObject.AddComponent<TransferButton>();
-        transferButton.Init(__instance.AreaData.Template.Type, __instance.Info);
+        transferButton.Init(__instance.AreaData, __instance.Info);
     }
 }

@@ -16,15 +16,23 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
 {
     private static readonly FieldInfo UIField = AccessTools.Field(typeof(UIElement), "UI");
 
-    private EAreaType areaType;
+    private static readonly EAreaStatus[] InteractableStatuses =
+    [
+        EAreaStatus.LockedToConstruct,
+        EAreaStatus.ReadyToConstruct,
+        EAreaStatus.LockedToUpgrade,
+        EAreaStatus.ReadyToUpgrade
+    ];
+
+    private AreaData areaData;
     private IEnumerable<ItemRequirement> itemRequirements;
 
     private DefaultUIButton button;
     private AddViewListClass UI;
 
-    public void Init(EAreaType areaType, List<Requirement> requirements)
+    public void Init(AreaData areaData, List<Requirement> requirements)
     {
-        this.areaType = areaType;
+        this.areaData = areaData;
 
         button = GetComponent<DefaultUIButton>();
         button.SetHeaderText("HideoutInteractions/TransferItems");
@@ -38,6 +46,8 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
             UI.AddDisposable(itemRequirement.OnFulfillmentChange.Subscribe(UpdateInteractable));
         }
 
+        UI.AddDisposable(areaData.StatusUpdated.Subscribe(UpdateInteractable));
+
         gameObject.SetActive(true);
         UpdateInteractable();
     }
@@ -47,7 +57,7 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
         // Apparently the AddDisposable isn't thread safe, check this isn't destroyed
         if (button != null)
         {
-            button.Interactable = itemRequirements.Any(r => r.IntCount > 0 && r.UserItemsCount > 0);
+            button.Interactable = InteractableStatuses.Contains(areaData.Status) && itemRequirements.Any(r => r.IntCount > 0 && r.UserItemsCount > 0);
         }
     }
 
@@ -70,7 +80,7 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
 
         // Do the client side delete operations
         var deleteOperations = hideout.method_17(hideoutItems);
-        if (!await HipServer.Contribute(areaType, hideoutItems.ToArray()))
+        if (!await HipServer.Contribute(areaData.Template.Type, hideoutItems.ToArray()))
         {
             deleteOperations.RollBack();
             return;
