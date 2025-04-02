@@ -35,6 +35,7 @@ public class LoadPatch : ModulePatch
                 if (requirement != null)
                 {
                     requirement.BaseCount -= contribution.count;
+                    requirement.Retest();
                 }
             }
         }

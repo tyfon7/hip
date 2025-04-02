@@ -88,6 +88,7 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
         {
             var requirement = itemRequirements.Single(r => r.TemplateId == transferredItem.Item.TemplateId);
             requirement.BaseCount -= transferredItem.Count;
+            requirement.Retest();
         }
     }
 }

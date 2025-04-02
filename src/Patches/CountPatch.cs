@@ -19,9 +19,9 @@ public class CountPatch : ModulePatch
     }
 
     [PatchPostfix]
-    public static void PatchPostfix(ItemRequirement ___itemRequirement, ItemRequirementPanel ___itemRequirementPanel_0)
+    public static void PatchPostfix(ItemRequirement ___itemRequirement, ItemRequirementPanel ___itemRequirementPanel_0, bool ___ignoreFulfillment)
     {
-        if (___itemRequirement.IntCount > 0)
+        if (!___ignoreFulfillment && ___itemRequirement.IntCount > 0)
         {
             return;
         }

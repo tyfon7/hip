@@ -40,7 +40,7 @@ public static class HipServer
         catch (Exception ex)
         {
             Plugin.Instance.Logger.LogError("Failed to contribute: " + ex.ToString());
-            NotificationManagerClass.DisplayWarningNotification("Contribution failed - check the server");
+            NotificationManagerClass.DisplayWarningNotification("Hideout contribution failed - check the server");
             return false;
         }
     }
