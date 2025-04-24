@@ -75,8 +75,11 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
     {
         var hideout = Singleton<HideoutClass>.Instance;
 
+        // method_16 below will not check IntCount until *after* it takes 1 item, so don't pass in things that are already 0
+        var validItemRequirements = itemRequirements.Where(r => r.IntCount > 0).ToArray();
+
         // Get items that satisfy requirements. This doesn't check that it *fully* fulfills requirements
-        List<HideoutItem> hideoutItems = hideout.method_16(itemRequirements.ToArray());
+        List<HideoutItem> hideoutItems = hideout.method_16(validItemRequirements);
 
         // Do the client side delete operations
         var deleteOperations = hideout.method_17(hideoutItems);
