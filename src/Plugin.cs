@@ -21,6 +21,8 @@ public class Plugin : BaseUnityPlugin
         new LoadPatch().Enable();
         new ButtonPatch().Enable();
         new CountPatch().Enable();
+
+        WishlistPatches.Enable();
     }
 
     public static bool InRaid()
