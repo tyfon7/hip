@@ -21,6 +21,7 @@ public class Plugin : BaseUnityPlugin
         new LoadPatch().Enable();
         new ButtonPatch().Enable();
         new CountPatch().Enable();
+        new UpgradePatch().Enable();
 
         WishlistPatches.Enable();
     }

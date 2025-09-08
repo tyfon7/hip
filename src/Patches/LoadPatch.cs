@@ -38,6 +38,8 @@ public class LoadPatch : ModulePatch
                     requirement.Retest();
                 }
             }
+
+            areaData.DecideStatus(areaData.CurrentLevel);
         }
     }
 }
