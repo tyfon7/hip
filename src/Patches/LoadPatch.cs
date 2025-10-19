@@ -1,8 +1,5 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using EFT;
 using EFT.Hideout;
 using HarmonyLib;
 using SPT.Reflection.Patching;
@@ -13,17 +10,17 @@ public class LoadPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(HideoutClass), nameof(HideoutClass.method_9));
+        return AccessTools.Method(typeof(HideoutClass), nameof(HideoutClass.method_14));
     }
 
     [PatchPostfix]
-    public static async void Postfix(Dictionary<EAreaType, AreaData> ___dictionary_0)
+    public static async void Postfix(HideoutClass __instance)
     {
         AreaProgress[] progress = await HipServer.Load();
 
         foreach (var areaProgress in progress)
         {
-            if (!___dictionary_0.TryGetValue(areaProgress.areaType, out AreaData areaData))
+            if (!__instance.Dictionary_0.TryGetValue(areaProgress.area, out AreaData areaData))
             {
                 continue;
             }

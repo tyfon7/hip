@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Comfort.Common;
-using EFT;
 using EFT.Hideout;
 using EFT.UI;
 using HarmonyLib;
@@ -76,10 +75,10 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
         var hideout = Singleton<HideoutClass>.Instance;
 
         // Get items that satisfy requirements. This doesn't check that it *fully* fulfills requirements
-        List<HideoutItem> hideoutItems = hideout.method_16(itemRequirements);
+        List<HideoutItem> hideoutItems = hideout.method_21(itemRequirements);
 
         // Do the client side delete operations
-        var deleteOperations = hideout.method_17(hideoutItems);
+        var deleteOperations = hideout.method_22(hideoutItems);
         if (!await HipServer.Contribute(areaData.Template.Type, hideoutItems.ToArray()))
         {
             deleteOperations.RollBack();
@@ -89,7 +88,7 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
         UpdateRequirements(hideoutItems);
 
         // Recalc various hideout things
-        hideout.method_19();
+        hideout.method_24();
     }
 
     private void UpdateRequirements(IEnumerable<HideoutItem> transferredItems)

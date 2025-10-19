@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using EFT;
 using Newtonsoft.Json;
@@ -30,11 +29,11 @@ public static class HipServer
         {
             var request = new ContributionRequest()
             {
-                areaType = areaType,
+                area = areaType,
                 items = items
             };
 
-            await RequestHandler.PutJsonAsync("/hip/contribute", Serialize(request));
+            await RequestHandler.PutJsonAsync("/hip/contribute", JsonConvert.SerializeObject(request));
             return true;
         }
         catch (Exception ex)
@@ -45,20 +44,9 @@ public static class HipServer
         }
     }
 
-    private static string Serialize<T>(T input)
-    {
-        // This is necessary to sidestep default serialization settings that have been set, which serialize enums as strings
-        JsonSerializer serializer = new();
-        using StringWriter sw = new();
-        using JsonWriter jw = new JsonTextWriter(sw);
-
-        serializer.Serialize(jw, input);
-        return sw.ToString();
-    }
-
     public struct ContributionRequest
     {
-        public EAreaType areaType;
+        public EAreaType area;
         public HideoutItem[] items;
     }
 }
@@ -71,6 +59,6 @@ public struct Contribution
 
 public struct AreaProgress
 {
-    public EAreaType areaType;
+    public EAreaType area;
     public Contribution[] contributions;
 }
