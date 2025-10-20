@@ -13,4 +13,4 @@ Some things to keep in mind:
 
 ### Technical details
 
-Contributions are stored in the user profile, in `characters.pmc.Hideout.Areas[area].contributions`. If you uninstall this mod, they will remain in your profile but will not be used by anything, and the items will not only be lost, but will not contribute towards the construction.
+Contributions are stored in the user profile data, in /SPT/user/profileData/PROFILE_ID/Tyfon.HideoutInProgress.json. Modifying that file is like modifying your profile - do so at your own risk. If you delete the file, your contributions will be gone and you'll need the original count of items to upgrade your hideout areas.
