@@ -4,94 +4,79 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Enums.Hideout;
 using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Routers;
 
 namespace HideoutInProgress.Server;
+
+using GetProgressPayload = Dictionary<HideoutAreas, Dictionary<string, int>>;
 
 [Injectable]
 public class HideoutInProgressCallbacks(
     ISptLogger<HideoutInProgressCallbacks> logger,
     ProfileHelper profileHelper,
-    InventoryHelper inventoryHelper)
+    ProfileDataHelper profileDataHelper,
+    InventoryHelper inventoryHelper,
+    EventOutputHolder eventOutputHolder)
 {
-    public ValueTask<IEnumerable<AreaProgress>> GetAreaProgresses(MongoId sessionId)
+    public ValueTask<GetProgressPayload> GetProgress(MongoId sessionId)
     {
         var pmcData = profileHelper.GetPmcProfile(sessionId);
+        var profileData = profileDataHelper.GetProfileData(pmcData.Id.Value);
 
-        List<AreaProgress> results = [];
+        GetProgressPayload results = [];
         foreach (var area in pmcData.Hideout.Areas)
         {
-            if (area.ExtensionData.TryGetValue("contributions", out object value))
+            if (profileData.AreaProgresses.TryGetValue(area.Type, out var progress))
             {
-                var contributions = value as List<Contribution>;
-                results.Add(new AreaProgress { Area = area.Type, Contributions = contributions });
+                results[area.Type] = progress;
             }
         }
 
-        return ValueTask.FromResult<IEnumerable<AreaProgress>>(results);
+        return ValueTask.FromResult(results);
     }
 
     public ValueTask<bool> Contribute(ContributionRequestData request, MongoId sessionId)
     {
         var pmcData = profileHelper.GetPmcProfile(sessionId);
-        var area = pmcData.Hideout.Areas.Find(a => a.Type == request.Area);
 
-        if (area == null)
+        var profileData = profileDataHelper.GetProfileData(pmcData.Id.Value);
+        if (!profileData.AreaProgresses.TryGetValue(request.Area, out var progress))
         {
-            logger.Error($"HideoutInProgress cannot find area of type {request.Area}");
-            return ValueTask.FromResult(false);
-        }
-
-        // Create mapping of required item with corrisponding item from player inventory (copied)
-        Dictionary<Item, HideoutItem> map = [];
-        foreach (var requestItem in request.Items)
-        {
-            var item = pmcData.Inventory.Items.Find(i => i.Id == requestItem.Id);
-            if (item == null)
-            {
-                logger.Error($"HideoutInProgress: Cannot find item {requestItem.Id}");
-                continue;
-            }
-
-            map.Add(item, requestItem);
-        }
-
-        if (map.Count == 0)
-        {
-            logger.Warning("HideoutInProgress: Contributed 0 items");
-            return ValueTask.FromResult(false);
-        }
-
-        List<Contribution> contributions;
-        if (area.ExtensionData.TryGetValue("contributions", out object value))
-        {
-            contributions = value as List<Contribution>;
-        }
-        else
-        {
-            contributions = [];
-            area.ExtensionData.Add("contributions", contributions);
+            profileData.AreaProgresses[request.Area] = progress = [];
         }
 
         int totalCount = 0;
-        foreach (var (item, requestItem) in map)
+        List<Item> inventoryItems = [];
+        foreach (var hideoutItem in request.Items)
         {
-            var contribution = contributions.Find(c => c.TemplateId == item.Template);
-            if (contribution == null)
+            var count = (int)hideoutItem.Count;
+
+            var item = pmcData.Inventory.Items.Find(i => i.Id == hideoutItem.Id);
+            if (item == null)
             {
-                contribution = new Contribution { TemplateId = item.Template, Count = 0 };
-                contributions.Add(contribution);
+                logger.Error($"HideoutInProgress: Cannot find item {hideoutItem.Id}");
+                continue;
+            }
+
+            if (!progress.TryGetValue(item.Template, out int existingCount))
+            {
+                existingCount = 0;
             }
 
             // Record the contribution
-            contribution.Count += (int)requestItem.Count; // why is this a double?
-            totalCount += contribution.Count;
+            progress[item.Template] = existingCount + count;
+            totalCount += count;
 
             // Remove the item from the inventory
-            inventoryHelper.RemoveItem(pmcData, item.Id, sessionId);
+            var dummyOutput = eventOutputHolder.GetOutput(sessionId);
+            inventoryHelper.RemoveItemByCount(pmcData, item.Id, (int)hideoutItem.Count, sessionId, dummyOutput);
         }
 
+        profileDataHelper.SaveProfileData(pmcData.Id.Value);
         logger.Success($"HideoutInProgress: Contributed {totalCount} items");
+
         return ValueTask.FromResult(true);
     }
 }

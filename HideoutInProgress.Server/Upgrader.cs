@@ -8,8 +8,6 @@ using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Utils;
 
 namespace HideoutInProgress.Server;
 
@@ -33,12 +31,13 @@ public class Upgrader : IOnLoad
         [PatchPrefix]
         public static void Prefix(PmcData pmcData, HideoutUpgradeRequestData request)
         {
-            var logger = ServiceLocator.ServiceProvider.GetService<ISptLogger<App>>();
+            var profileDataHelper = ServiceLocator.ServiceProvider.GetService<ProfileDataHelper>();
+            var profileData = profileDataHelper.GetProfileData(pmcData.Id.Value);
 
-            logger.Info($"HideoutInProgress: Removing contribution data for {request.AreaType}");
-
-            var area = pmcData.Hideout.Areas.Find(a => a.Type == request.AreaType);
-            area.ExtensionData.Remove("contributions");
+            if (profileData.AreaProgresses.Remove(request.AreaType.Value))
+            {
+                profileDataHelper.SaveProfileData(pmcData.Id.Value);
+            }
         }
     }
 }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using EFT.Hideout;
@@ -17,22 +16,22 @@ public class LoadPatch : ModulePatch
     [PatchPostfix]
     public static async void Postfix(HideoutClass __instance)
     {
-        IEnumerable<AreaProgress> progress = await HipServer.Load();
+        var data = await HipServer.Load();
 
-        foreach (var areaProgress in progress)
+        foreach (var (areaType, contributions) in data)
         {
-            if (!__instance.Dictionary_0.TryGetValue(areaProgress.area, out AreaData areaData))
+            if (!__instance.Dictionary_0.TryGetValue(areaType, out AreaData areaData))
             {
                 continue;
             }
 
             var itemRequirements = areaData.NextStage.Requirements.OfType<ItemRequirement>().Where(r => r.Item is not MoneyItemClass);
-            foreach (var contribution in areaProgress.contributions ?? [])
+            foreach (var (templateId, count) in contributions ?? [])
             {
-                var requirement = itemRequirements.FirstOrDefault(r => r.Item.TemplateId == contribution.tpl);
+                var requirement = itemRequirements.FirstOrDefault(r => r.Item.TemplateId == templateId);
                 if (requirement != null)
                 {
-                    requirement.BaseCount -= contribution.count;
+                    requirement.BaseCount -= count;
                     requirement.Retest();
                 }
             }

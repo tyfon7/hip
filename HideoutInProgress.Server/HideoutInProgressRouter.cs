@@ -15,7 +15,7 @@ public class HideoutInProgressRouter(JsonUtil jsonUtil, HideoutInProgressCallbac
             ),
             new RouteAction(
                 "/hip/load",
-                async (url, info, sessionId, output) => jsonUtil.Serialize(await callbacks.GetAreaProgresses(sessionId))
+                async (url, info, sessionId, output) => jsonUtil.Serialize(await callbacks.GetProgress(sessionId))
             )
         ]
     )

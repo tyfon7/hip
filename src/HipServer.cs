@@ -7,14 +7,16 @@ using SPT.Common.Http;
 
 namespace HideoutInProgress;
 
+using LoadPayload = Dictionary<EAreaType, Dictionary<string, int>>;
+
 public static class HipServer
 {
-    public static async Task<IEnumerable<AreaProgress>> Load()
+    public static async Task<LoadPayload> Load()
     {
         try
         {
             string jsonPayload = await RequestHandler.GetJsonAsync("/hip/load");
-            return JsonConvert.DeserializeObject<IEnumerable<AreaProgress>>(jsonPayload);
+            return JsonConvert.DeserializeObject<LoadPayload>(jsonPayload);
         }
         catch (Exception ex)
         {
@@ -50,16 +52,4 @@ public static class HipServer
         public EAreaType area;
         public HideoutItem[] items;
     }
-}
-
-public struct Contribution
-{
-    public string tpl;
-    public int count;
-}
-
-public struct AreaProgress
-{
-    public EAreaType area;
-    public Contribution[] contributions;
 }
