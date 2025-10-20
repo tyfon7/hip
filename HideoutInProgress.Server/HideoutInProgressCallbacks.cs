@@ -31,7 +31,7 @@ public class HideoutInProgressCallbacks(
         return ValueTask.FromResult<IEnumerable<AreaProgress>>(results);
     }
 
-    public ValueTask<string> Contribute(ContributionRequestData request, MongoId sessionId)
+    public ValueTask<bool> Contribute(ContributionRequestData request, MongoId sessionId)
     {
         var pmcData = profileHelper.GetPmcProfile(sessionId);
         var area = pmcData.Hideout.Areas.Find(a => a.Type == request.Area);
@@ -39,7 +39,7 @@ public class HideoutInProgressCallbacks(
         if (area == null)
         {
             logger.Error($"HideoutInProgress cannot find area of type {request.Area}");
-            return ValueTask.FromResult("Fail");
+            return ValueTask.FromResult(false);
         }
 
         // Create mapping of required item with corrisponding item from player inventory (copied)
@@ -59,7 +59,7 @@ public class HideoutInProgressCallbacks(
         if (map.Count == 0)
         {
             logger.Warning("HideoutInProgress: Contributed 0 items");
-            return ValueTask.FromResult("Fail");
+            return ValueTask.FromResult(false);
         }
 
         List<Contribution> contributions;
@@ -92,6 +92,6 @@ public class HideoutInProgressCallbacks(
         }
 
         logger.Success($"HideoutInProgress: Contributed {totalCount} items");
-        return ValueTask.FromResult("Success");
+        return ValueTask.FromResult(true);
     }
 }

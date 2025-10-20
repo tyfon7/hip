@@ -11,11 +11,11 @@ public class HideoutInProgressRouter(JsonUtil jsonUtil, HideoutInProgressCallbac
         [
             new RouteAction<ContributionRequestData>(
                 "/hip/contribute",
-                async (url, info, sessionId, output) => await callbacks.Contribute(info, sessionId)
+                async (url, info, sessionId, output) => jsonUtil.Serialize(await callbacks.Contribute(info, sessionId))
             ),
             new RouteAction(
                 "/hip/load",
-                async (url, info, sessionId, output) => await callbacks.GetAreaProgresses(sessionId)
+                async (url, info, sessionId, output) => jsonUtil.Serialize(await callbacks.GetAreaProgresses(sessionId))
             )
         ]
     )

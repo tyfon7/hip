@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using EFT;
 using Newtonsoft.Json;
@@ -8,12 +9,12 @@ namespace HideoutInProgress;
 
 public static class HipServer
 {
-    public static async Task<AreaProgress[]> Load()
+    public static async Task<IEnumerable<AreaProgress>> Load()
     {
         try
         {
             string jsonPayload = await RequestHandler.GetJsonAsync("/hip/load");
-            return JsonConvert.DeserializeObject<AreaProgress[]>(jsonPayload);
+            return JsonConvert.DeserializeObject<IEnumerable<AreaProgress>>(jsonPayload);
         }
         catch (Exception ex)
         {

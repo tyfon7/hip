@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using EFT.Hideout;
@@ -16,7 +17,7 @@ public class LoadPatch : ModulePatch
     [PatchPostfix]
     public static async void Postfix(HideoutClass __instance)
     {
-        AreaProgress[] progress = await HipServer.Load();
+        IEnumerable<AreaProgress> progress = await HipServer.Load();
 
         foreach (var areaProgress in progress)
         {
