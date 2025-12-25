@@ -89,6 +89,8 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
 
         // Recalc various hideout things
         hideout.method_24();
+
+        Plugin.WishlistExtendedForceRebuild();
     }
 
     private void UpdateRequirements(IEnumerable<HideoutItem> transferredItems)

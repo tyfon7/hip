@@ -38,5 +38,7 @@ public class LoadPatch : ModulePatch
 
             areaData.DecideStatus(areaData.CurrentLevel);
         }
+
+        Plugin.WishlistExtendedForceRebuild();
     }
 }
