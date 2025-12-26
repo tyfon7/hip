@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Comfort.Common;
 using EFT.Hideout;
+using EFT.InventoryLogic;
 using EFT.UI;
 using HarmonyLib;
 using UnityEngine;
@@ -54,10 +55,27 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
     private void UpdateInteractable()
     {
         // Apparently the AddDisposable isn't thread safe, check this isn't destroyed
-        if (button != null)
+        if (button == null)
         {
-            button.Interactable = InteractableStatuses.Contains(areaData.Status) && itemRequirements.Any(r => r.IntCount > 0 && r.UserItemsCount > 0);
+            return;
         }
+
+        foreach (var requirement in itemRequirements)
+        {
+            var userCount = requirement.UserItemsCount;
+            if (requirement.Item is CompoundItem)
+            {
+                userCount -= requirement.NotEmptyCompoundItems;
+            }
+
+            if (requirement.IntCount > 0 && userCount > 0)
+            {
+                button.Interactable = true;
+                return;
+            }
+        }
+
+        button.Interactable = false;
     }
 
     public void OnPointerClick(PointerEventData eventData)

@@ -13,8 +13,8 @@ public class ButtonPatch : ModulePatch
         return AccessTools.DeclaredMethod(typeof(RequirementsPanel), nameof(RequirementsPanel.ShowContents));
     }
 
-    [PatchPrefix]
-    public static void Prefix(RequirementsPanel __instance, Transform ____itemContainer)
+    [PatchPostfix]
+    public static void Postfix(RequirementsPanel __instance, Transform ____itemContainer)
     {
         var areaScreen = __instance.GetComponentInParent<AreaScreenSubstrate>();
         var backButton = areaScreen.transform.Find("Content/NextLevel/BottomPanel/CurrentLevelButton");

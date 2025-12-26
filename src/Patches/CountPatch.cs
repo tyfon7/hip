@@ -10,6 +10,7 @@ namespace HideoutInProgress;
 public class CountPatch : ModulePatch
 {
     private static FieldInfo HideoutItemViewFactoryField;
+
     protected override MethodBase GetTargetMethod()
     {
         HideoutItemViewFactoryField = AccessTools.Field(typeof(ItemRequirementPanel), "_itemIconViewFactory");
