@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 
-namespace WeaponCustomizer.Server;
+namespace HideoutInProgress.Server;
 
 public record ModMetadata : AbstractModMetadata
 {
