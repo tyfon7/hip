@@ -60,6 +60,12 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
             return;
         }
 
+        if (!InteractableStatuses.Contains(areaData.Status))
+        {
+            button.Interactable = false;
+            return;
+        }
+
         foreach (var requirement in itemRequirements)
         {
             var userCount = requirement.UserItemsCount;
