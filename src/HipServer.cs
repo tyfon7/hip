@@ -32,8 +32,8 @@ public static class HipServer
         {
             var request = new ContributionRequest()
             {
-                area = areaType,
-                items = items
+                Area = areaType,
+                Items = items
             };
 
             await RequestHandler.PutJsonAsync("/hip/contribute", JsonConvert.SerializeObject(request));
@@ -49,7 +49,10 @@ public static class HipServer
 
     public struct ContributionRequest
     {
-        public EAreaType area;
-        public HideoutItem[] items;
+        [JsonProperty("area")]
+        public EAreaType Area;
+
+        [JsonProperty("items")]
+        public HideoutItem[] Items;
     }
 }

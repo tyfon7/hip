@@ -24,29 +24,28 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
         EAreaStatus.ReadyToUpgrade
     ];
 
-    private AreaData areaData;
-    private ItemRequirement[] itemRequirements;
+    private AreaData _areaData;
+    private ItemRequirement[] _itemRequirements;
 
-    private DefaultUIButton button;
-    private AddViewListClass UI;
+    private DefaultUIButton _button;
 
     public void Init(AreaData areaData, List<Requirement> requirements)
     {
-        this.areaData = areaData;
+        _areaData = areaData;
 
-        button = GetComponent<DefaultUIButton>();
-        button.SetHeaderText("HideoutInteractions/TransferItems");
+        _button = GetComponent<DefaultUIButton>();
+        _button.SetHeaderText("HideoutInteractions/TransferItems");
 
-        UI = (AddViewListClass)UIField.GetValue(button);
+        var ui = (AddViewListClass)UIField.GetValue(_button);
 
         // Items only, and not money (money is all or nothing)
-        itemRequirements = requirements.OfType<ItemRequirement>().Where(r => r.Item is not MoneyItemClass).ToArray();
-        foreach (var itemRequirement in itemRequirements)
+        _itemRequirements = requirements.OfType<ItemRequirement>().Where(r => r.Item is not MoneyItemClass).ToArray();
+        foreach (var itemRequirement in _itemRequirements)
         {
-            UI.AddDisposable(itemRequirement.OnFulfillmentChange.Subscribe(UpdateInteractable));
+            ui.AddDisposable(itemRequirement.OnFulfillmentChange.Subscribe(UpdateInteractable));
         }
 
-        UI.AddDisposable(areaData.StatusUpdated.Subscribe(UpdateInteractable));
+        ui.AddDisposable(areaData.StatusUpdated.Subscribe(UpdateInteractable));
 
         gameObject.SetActive(true);
         UpdateInteractable();
@@ -55,18 +54,18 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
     private void UpdateInteractable()
     {
         // Apparently the AddDisposable isn't thread safe, check this isn't destroyed
-        if (button == null)
+        if (_button == null)
         {
             return;
         }
 
-        if (!InteractableStatuses.Contains(areaData.Status))
+        if (!InteractableStatuses.Contains(_areaData.Status))
         {
-            button.Interactable = false;
+            _button.Interactable = false;
             return;
         }
 
-        foreach (var requirement in itemRequirements)
+        foreach (var requirement in _itemRequirements)
         {
             var userCount = requirement.UserItemsCount;
             if (requirement.Item is CompoundItem)
@@ -76,17 +75,17 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
 
             if (requirement.IntCount > 0 && userCount > 0)
             {
-                button.Interactable = true;
+                _button.Interactable = true;
                 return;
             }
         }
 
-        button.Interactable = false;
+        _button.Interactable = false;
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!button.Interactable)
+        if (!_button.Interactable)
         {
             return;
         }
@@ -99,11 +98,11 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
         var hideout = Singleton<HideoutClass>.Instance;
 
         // Get items that satisfy requirements. This doesn't check that it *fully* fulfills requirements
-        List<HideoutItem> hideoutItems = hideout.method_21(itemRequirements);
+        List<HideoutItem> hideoutItems = hideout.method_21(_itemRequirements);
 
         // Do the client side delete operations
         var deleteOperations = hideout.method_22(hideoutItems);
-        if (!await HipServer.Contribute(areaData.Template.Type, hideoutItems.ToArray()))
+        if (!await HipServer.Contribute(_areaData.Template.Type, hideoutItems.ToArray()))
         {
             deleteOperations.RollBack();
             return;
@@ -121,7 +120,7 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
     {
         foreach (var transferredItem in transferredItems)
         {
-            var requirement = itemRequirements.Single(r => r.TemplateId == transferredItem.Item.TemplateId);
+            var requirement = _itemRequirements.Single(r => r.TemplateId == transferredItem.Item.TemplateId);
             requirement.BaseCount -= transferredItem.Count;
             requirement.Retest();
         }
