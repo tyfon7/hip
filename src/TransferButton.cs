@@ -36,10 +36,10 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
         _button = GetComponent<DefaultUIButton>();
         _button.SetHeaderText("HideoutInteractions/TransferItems");
 
-        var ui = (AddViewListClass)UIField.GetValue(_button);
+        var ui = (UIParent)UIField.GetValue(_button);
 
         // Items only, and not money (money is all or nothing)
-        _itemRequirements = requirements.OfType<ItemRequirement>().Where(r => r.Item is not MoneyItemClass).ToArray();
+        _itemRequirements = requirements.OfType<ItemRequirement>().Where(r => r.Item is not Money).ToArray();
         foreach (var itemRequirement in _itemRequirements)
         {
             ui.AddDisposable(itemRequirement.OnFulfillmentChange.Subscribe(UpdateInteractable));
@@ -70,7 +70,7 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
             var userCount = requirement.UserItemsCount;
             if (requirement.Item is CompoundItem)
             {
-                userCount -= requirement.NotEmptyCompoundItems;
+                userCount -= requirement._notEmptyCompoundItems;
             }
 
             if (requirement.IntCount > 0 && userCount > 0)
@@ -95,13 +95,13 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
 
     private async Task Contribute()
     {
-        var hideout = Singleton<HideoutClass>.Instance;
+        var hideout = Singleton<HideoutRepresentation>.Instance;
 
         // Get items that satisfy requirements. This doesn't check that it *fully* fulfills requirements
-        List<HideoutItem> hideoutItems = hideout.method_21(_itemRequirements);
+        List<HideoutItemReference> hideoutItems = hideout.GetItemReferences(_itemRequirements);
 
         // Do the client side delete operations
-        var deleteOperations = hideout.method_22(hideoutItems);
+        var deleteOperations = hideout.ResolveReferenceAction(hideoutItems);
         if (!await HipServer.Contribute(_areaData.Template.Type, hideoutItems.ToArray()))
         {
             deleteOperations.RollBack();
@@ -116,7 +116,7 @@ public class TransferButton : MonoBehaviour, IPointerClickHandler
         Plugin.WishlistExtendedForceRebuild();
     }
 
-    private void UpdateRequirements(IEnumerable<HideoutItem> transferredItems)
+    private void UpdateRequirements(IEnumerable<HideoutItemReference> transferredItems)
     {
         foreach (var transferredItem in transferredItems)
         {

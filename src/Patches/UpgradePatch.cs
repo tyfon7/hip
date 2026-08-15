@@ -10,13 +10,13 @@ public class UpgradePatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(HideoutClass), nameof(HideoutClass.method_21));
+        return AccessTools.Method(typeof(HideoutRepresentation), nameof(HideoutRepresentation.GetItemReferences));
     }
 
     [PatchPrefix]
     public static void Prefix(ref ItemRequirement[] requirements)
     {
-        // method_21 doesn't handle 0, so just remove the requirements that are 0
+        // GetItemReferences doesn't handle 0, so just remove the requirements that are 0
         requirements = requirements.Where(r => r.IntCount > 0).ToArray();
     }
 }

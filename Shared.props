@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-    <Version>2.0.2</Version>
-    <SPTPath>$(MSBuildThisFileDirectory)..\..\..\..\SPT\4.0</SPTPath>
+    <Version>3.0.0</Version>
+    <SPTPath>$(MSBuildThisFileDirectory)..\..\..\..\SPT\4.1</SPTPath>
     <FikaPath>$(MSBuildThisFileDirectory)..\..\..\..\SPT\Fika</FikaPath>
     <AssemblySearchPaths>
       $(SPTPath)\EscapeFromTarkov_Data\Managed;
@@ -18,12 +18,6 @@
     <DeployTarget Include="Release" Condition="'$(Configuration)'=='Release'">
       <Path>$(MSBuildThisFileDirectory)dist</Path>
     </DeployTarget>
-    <!-- <DeployTarget Include="Fika1">
-      <Path>d:\fika</Path>
-    </DeployTarget>
-    <DeployTarget Include="Fika2">
-      <Path>d:\fika2</Path>
-    </DeployTarget> -->
   </ItemGroup>
 
   <Target Name="SPTClientDeploy" AfterTargets="PostBuildEvent" Condition="'$(SPTModType)'=='Client'">
@@ -40,10 +34,10 @@
   <Target Name="SPTServerDeploy" AfterTargets="PostBuildEvent" Condition="'$(SPTModType)'=='Server'">
     <Exec
       Command='
-        xcopy /F /Y "$(TargetPath)" "%(DeployTarget.Path)\SPT\user\mods\$(TargetName)\"
+        xcopy /F /Y "$(TargetPath)" "%(DeployTarget.Path)\SPT_Runtime\user\mods\$(TargetName)\"
 
         if $(ConfigurationName) == Debug (
-          xcopy /F /Y "$(ProjectDir)$(OutDir)$(TargetName).pdb" "%(DeployTarget.Path)\SPT\user\mods\$(TargetName)\"
+          xcopy /F /Y "$(ProjectDir)$(OutDir)$(TargetName).pdb" "%(DeployTarget.Path)\SPT_Runtime\user\mods\$(TargetName)\"
         )'
     />
   </Target>

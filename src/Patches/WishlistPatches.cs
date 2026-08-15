@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using EFT;
 using EFT.Hideout;
 using HarmonyLib;
 using SPT.Reflection.Patching;
 
 namespace HideoutInProgress;
 
-// Specifically when called from WishlistManager (GClass1836), remove items with required count of 0 from the enumeration. This way they won't
-// be tagged as hideout wishlist
+// Specifically when called from WishlistManager, remove items with required count of 0 from the enumeration. 
+// This way they won't be tagged as hideout wishlist
 public static class WishlistPatches
 {
     private static bool InPatch = false;

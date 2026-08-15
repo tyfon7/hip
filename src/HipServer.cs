@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using EFT;
+using EFT.Communications;
+using EFT.Hideout;
 using Newtonsoft.Json;
 using SPT.Common.Http;
 
@@ -21,12 +23,12 @@ public static class HipServer
         catch (Exception ex)
         {
             Plugin.Instance.Logger.LogError("Failed to load: " + ex.ToString());
-            NotificationManagerClass.DisplayWarningNotification("Hideout In Progress failed to load - check the server");
+            NotificationManager.DisplayWarningNotification("Hideout In Progress failed to load - check the server");
             return [];
         }
     }
 
-    public static async Task<bool> Contribute(EAreaType areaType, HideoutItem[] items)
+    public static async Task<bool> Contribute(EAreaType areaType, HideoutItemReference[] items)
     {
         try
         {
@@ -42,7 +44,7 @@ public static class HipServer
         catch (Exception ex)
         {
             Plugin.Instance.Logger.LogError("Failed to contribute: " + ex.ToString());
-            NotificationManagerClass.DisplayWarningNotification("Hideout contribution failed - check the server");
+            NotificationManager.DisplayWarningNotification("Hideout contribution failed - check the server");
             return false;
         }
     }
@@ -53,6 +55,6 @@ public static class HipServer
         public EAreaType Area;
 
         [JsonProperty("items")]
-        public HideoutItem[] Items;
+        public HideoutItemReference[] Items;
     }
 }

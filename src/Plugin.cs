@@ -3,6 +3,7 @@ using BepInEx.Bootstrap;
 using BepInEx.Logging;
 using Comfort.Common;
 using EFT;
+using EFT.Hideout;
 using EFT.UI;
 
 namespace HideoutInProgress;
@@ -38,7 +39,7 @@ public class Plugin : BaseUnityPlugin
     {
         if (Chainloader.PluginInfos.ContainsKey("com.zgfuedkx.wishlistextended"))
         {
-            Singleton<HideoutClass>.Instance.FireUpdateArea(); // Will invalidate their cache
+            Singleton<HideoutRepresentation>.Instance.FireUpdateArea(); // Will invalidate their cache
 
             // Due to how I patch RelatedRequirements.GetEnumerator and how he patches IsInWishlist/GetWishlist, I need to force 
             // WishlistExtended to not just clear its cache but to rebuild it. I need their cache rebuilt from a call to GetWishlist,

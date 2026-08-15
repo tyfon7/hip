@@ -8,9 +8,9 @@ _I announced this mod and 6 hours later BSG announced their plans to implement t
 
 Some things to keep in mind:
 
--   Cash is not contributed early, and will be payed in full when you finally start the upgrade
--   Items contributed cannot be retrieved
+- Cash is not contributed early, and will be payed in full when you finally start the upgrade
+- Items contributed cannot be retrieved
 
 ### Technical details
 
-Contributions are stored in the user profile data, in /SPT/user/profileData/PROFILE_ID/Tyfon.HideoutInProgress.json. Modifying that file is like modifying your profile - do so at your own risk. If you delete the file, your contributions will be gone and you'll need the original count of items to upgrade your hideout areas.
+Contributions are stored in the user profile data, in /SPT_Runtime/user/profileData/PROFILE_ID/Tyfon.HideoutInProgress.json. Modifying that file is like modifying your profile - do so at your own risk. If you delete the file, your contributions will be gone and you'll need the original count of items to upgrade your hideout areas.
